@@ -1,0 +1,1 @@
+Ativar: node bot.js
