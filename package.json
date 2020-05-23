@@ -1,0 +1,22 @@
+{
+  "name": "dkc",
+  "version": "1.0.0",
+  "description": "Bot para ajudar a jogar Draenak",
+  "main": "bot.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "eris": "^0.13.1",
+    "express": "^4.17.1",
+    "firebase": "^7.14.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm start"
+  },
+  "keywords": [
+    "rpg",
+    "draenak"
+  ],
+  "author": "jposawa",
+  "license": "ISC"
+}
