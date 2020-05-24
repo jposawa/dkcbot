@@ -10,11 +10,12 @@ const fnFirebase = require('./fnFirebase.js');
 comandoPorNome['comandos'] = {
     apenasDono:false,
     executar: (msg, args) =>{
-        let mensagem = "Atualmente existem os seguintes comandos:\n";
-        mensagem += "**comandos** -> Lista de comandos\n";
-        mensagem += "**ajuda** -> Lista de comandos\n";
-        mensagem += "**sobre** -> Um pouco sobre o bot\n";
-        mensagem += "**ficha** -> Retorna site para criação de ficha"; 
+        let listaComandos = Object.keys(comandoPorNome);
+        let mensagem = "Atualmente existem os seguintes comandos:";
+        
+        listaComandos.forEach(nomeComando => {
+            mensagem += "\n"+nomeComando;
+        })
 
         msg.channel.createMessage(mensagem);
     }
