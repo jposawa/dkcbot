@@ -1,58 +1,26 @@
 const eris = require("eris");
+// require("babel-core");
+
 const {BOT_TOKEN, BOT_OWNER_ID} = require("./config.json");
 
 const bot = new eris.Client(BOT_TOKEN);
 
 const PREFIX = "dkc!";
 
-const comandoPorNome = {};
+// const comandoPorNome = {};
 
-// const comandoPorNome = require('./comandos.js');
+//COMANDOS BOT
+const comandoPorNome = require('./comandos.js');
 //INICIALIZAÇÃO
 bot.on('ready', () =>{
     console.log("Conectado e pronto");
 });
 
 
-//LISTA DE COMANDOS//
-
-comandoPorNome['comandos'] = {
-    apenasDono:false,
-    executar: (msg, args) =>{
-        let mensagem = "Atualmente existem os seguintes comandos:\n";
-        mensagem += "**comandos** -> Lista de comandos\n";
-        mensagem += "**ajuda** -> Lista de comandos\n";
-        mensagem += "**sobre** -> Um pouco sobre o bot\n";
-        mensagem += "**ficha** -> Retorna site para criação de ficha"; 
-
-        msg.channel.createMessage(mensagem);
-    }
-};
-
-comandoPorNome['ajuda'] = comandoPorNome.comandos;
-
-comandoPorNome['sobre'] = {
-    apenasDono:false,
-    executar: (msg,args) =>{
-        msg.channel.createMessage("Sou apenas um bot para auxiliar a jogar Draenak");
-        // msg.channel.createMessage("Para criar sua ficha acesse https://dkc.netlify.app/");
-    }
-    //return msg.channel.createMessage("Sou apenas um bot novinho para tentar ajudar a jogar Draenak");
-};
-
-comandoPorNome['ficha'] = {
-    apenasDono:false,
-    executar: (msg, args) => {
-        msg.channel.createMessage("O site para criar sua ficha é https://dkc.netlify.app");
-    }
-}
-
-//LISTA DE COMANDOS//
-
-
 //CHAMADAS BOT
 bot.on('messageCreate', async(msg) => {
     //MENÇÃO AO BOT
+    // console.log(comandoPorNome);
     const botMencionado = msg.mentions.find(
         usuarioMencionado => usuarioMencionado.id === bot.user.id,
     );
@@ -98,8 +66,8 @@ bot.on('messageCreate', async(msg) => {
     }
 
     // console.log(msg.author);
-    console.log(msg.member);
-    console.log(msg.member.roles);
+    // console.log(msg.member);
+    // console.log(msg.member.roles);
 
     const args = partes.slice(1);
 
