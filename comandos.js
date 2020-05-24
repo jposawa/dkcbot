@@ -1,5 +1,6 @@
 const comandoPorNome = {};
 const fnFirebase = require('./fnFirebase.js');
+const {BOT_OWNER_ID} = require('./config.json');
 
 /* comandoPorNome['sobre'] = (msg, args) => {
     msg.channel.send("Sou apenas um bot para auxiliar a jogar Draenak");
@@ -46,14 +47,13 @@ comandoPorNome['vincular'] = {
 
         if(args.length === 0)
         {
-            resposta += "É necessário informar pelo menos o seu e-mail para vincular a conta com nosso banco de dados";
-            // resposta += fnFirebase.buscaUsuario(msg.author.id);
+            resposta = "É necessário informar pelo menos o seu e-mail para vincular a conta com nosso banco de dados";
         }
         else
         {
             if(msg.mentions.length === 0)
             {
-                funcionou = fnFirebase.vincular(args[0], msg.author.id);
+                funcionou = fnFirebase.vincular(msg, args[0], msg.author.id);
             }
             else if(msg.mentions.length > 1)
             {
@@ -61,27 +61,22 @@ comandoPorNome['vincular'] = {
             }
             else
             {
-                functionou = fnFirebase.vincular(args[0], msg.mentions[0].id);
+                if(msg.author.id === BOT_OWNER_ID)
+                {
+                    funcionou = fnFirebase.vincular(msg, args[0], msg.mentions[0].id);
+                }
+                else
+                {
+                    msg.channel.createMessage("Apenas o dono da conta ou administradores do bot podem vincular contas de terceiros");
+                }
             }
-            /* resposta = fnFirebase.vincular(args[0]).then(retorno =>{
-                console.log(retorno);
-            }) */
         }
+    }
+}
 
-        if(funcionou)
-        {
-            resposta = "Usuário vinculado com sucesso";
-        }
-        else
-        {
-            resposta = "Houve algum erro na vinculação. Tente novamente ou entre em contato com um dos administradores";
-        }
+comandoPorNome['mesas'] = {
+    executar: (msg, args) => {
 
-        msg.channel.createMessage(resposta);
-        // let resposta = fnFirebase.buscaUsuario(1);
-
-        // msg.channel.createMessage(resposta);
-        // console.log(resposta);
     }
 }
 
