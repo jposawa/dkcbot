@@ -14,7 +14,7 @@ comandoPorNome['comandos'] = {
         let mensagem = "Atualmente existem os seguintes comandos:";
         
         listaComandos.forEach(nomeComando => {
-            mensagem += "\n"+nomeComando;
+            mensagem += "\n**"+nomeComando+"**";
         })
 
         msg.channel.createMessage(mensagem);
