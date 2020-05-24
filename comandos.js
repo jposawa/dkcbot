@@ -76,7 +76,126 @@ comandoPorNome['vincular'] = {
 
 comandoPorNome['mesas'] = {
     executar: (msg, args) => {
+        if(msg.mentions.length === 0)
+        {
+            fnFirebase.mesas(msg, msg.author.id);
+        }
+        else
+        {
+            msg.mentions.forEach(mencao => {
+                fnFirebase.mesas(msg, mencao.id);
+            })
+        }
+    }
+}
 
+comandoPorNome['ativarMesa'] = {
+    executar: (msg, args) => {
+        if(args.length === 0)
+        {
+            msg.channel.createMessage("É necessário informar qual mesa deseja ser ativada");
+        }
+        else
+        {
+            let parametros = args.join(" ");
+            parametros = parametros.split("<");
+            parametros = parametros[0].trim();
+            // console.log(parametros);
+
+            if(msg.mentions.length === 0)
+            {
+                fnFirebase.ativarMesa(msg, parametros, msg.author.id);
+            }
+            else
+            {
+                msg.mentions.forEach(mencao => {
+                    fnFirebase.ativarMesa(msg, parametros, mencao.id);
+                })
+            }
+        }
+    }
+}
+
+comandoPorNome['fichas'] = {
+    executar: (msg, args) => {
+        if(msg.mentions.length === 0)
+        {
+            fnFirebase.fichas(msg, msg.author.id)
+        }
+        else
+        {
+            msg.mentions.forEach(mencao => {
+                fnFirebase.fichas(msg, mencao.id)
+            })
+        }
+    }
+}
+
+comandoPorNome['ativarFicha'] = {
+    executar: (msg, args) => {
+        if(args.length === 0)
+        {
+            msg.channel.createMessage("É necessário informar qual ficha deseja ser ativada");
+        }
+        else
+        {
+            let parametros = args.join(" ");
+            parametros = parametros.split("<");
+            parametros = parametros[0].trim();
+            // console.log(parametros);
+
+            if(msg.mentions.length === 0)
+            {
+                fnFirebase.ativarFicha(msg, parametros, msg.author.id);
+            }
+            else
+            {
+                msg.mentions.forEach(mencao => {
+                    fnFirebase.ativarFicha(msg, parametros, mencao.id);
+                })
+            }
+        }
+    }
+}
+
+comandoPorNome['dadosFicha'] = {
+    executar: (msg, args) => {
+        let filtro;
+        if(args.length > 0)
+        {
+            filtro = args.join("|");
+            filtro = filtro.split("<");
+            if(filtro[0] === "")
+            {
+                filtro = filtro[1];
+                filtro = filtro.split("|");
+                // console.log("caplow");
+                if(filtro[0][0] === "@")
+                {
+                    filtro = filtro.slice(1);
+                }
+            }
+            else
+            {
+                filtro = filtro[0];
+                filtro = filtro.split("|");
+                // console.log("xablau");
+                if(filtro[filtro.length-1][0] === "@")
+                {
+                    filtro.pop();
+                }
+            }
+        }
+        if(msg.mentions.length === 0)
+        {
+            fnFirebase.dadosFicha(msg, msg.author.id, filtro);
+        }
+        else
+        {
+            msg.mentions.forEach(mencao => {
+                fnFirebase.dadosFicha(msg, mencao.id, filtro);
+            });
+        }
     }
 }
 
