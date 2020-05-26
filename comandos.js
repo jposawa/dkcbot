@@ -286,6 +286,7 @@ function InfoComando(msg, nomeComando)
 
         case "vincular":
             mensagem += "serve para me conectar ao seu cadastro na plataforma Draenak. Somente após esse comando eu consigo te encontrar no banco de dados do sistema para poder ler os dados de ficha e mesa";
+            mensagem += "\nPara vincular com a sua conta utilize o mesmo e-mail do site junto ao comando.\nAssim: *" + prefixo + "vincular **e-mail***";
         break;
 
         case "mesas":
