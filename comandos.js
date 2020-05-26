@@ -69,6 +69,7 @@ comandoPorNome['vincular'] = {
         if(args.length === 0)
         {
             resposta = "É necessário informar pelo menos o seu e-mail para vincular a conta com nosso banco de dados";
+            msg.channel.createMessage(resposta);
         }
         else
         {
