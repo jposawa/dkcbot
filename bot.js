@@ -47,7 +47,7 @@ bot.on('messageCreate', async(msg) => {
         return;
     }
 
-    if(!conteudo.startsWith(PREFIX))
+    if(!conteudo.startsWith(PREFIX.toLowerCase()))
     {
         // console.warn("Prefixo errado");
         return;
