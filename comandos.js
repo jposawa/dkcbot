@@ -262,8 +262,9 @@ comandoPorNome['rolar'] ={
 
 function InfoComando(msg, nomeComando)
 {
-    let mensagem = "*"+prefixo+nomeComando+"* ";
+    console.log("Oi" + nomeComando);
     let prefixo = "dkc!";
+    let mensagem = "*"+prefixo+nomeComando+"* ";
     let minimoUp = 85;
     switch(nomeComando)
     {
