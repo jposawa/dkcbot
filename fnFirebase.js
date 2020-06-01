@@ -572,7 +572,7 @@ fnFirebase['rolar'] = (msg, parametros, idDiscord) =>{
             else
             {
                 const idUsuario = dadosUsuario[0].id;
-                const {fichaDiscord, modulo} = dadosUsuario[0];
+                const {fichaDiscord} = dadosUsuario[0];
                 let {mesaDiscord} = dadosUsuario[0];
 
                 if(mesaDiscord === undefined || mesaDiscord === null || mesaDiscord === "")
@@ -585,7 +585,7 @@ fnFirebase['rolar'] = (msg, parametros, idDiscord) =>{
 
                     if(fichaSelecionada === null || fichaSelecionada === undefined)
                     {
-                        msg.channel.createMessage("Ficha não encontrada\nCertifique-se de que existe uma ficha ativa");
+                        msg.channel.createMessage("Ficha não encontrada\nCertifique-se de que existe uma ficha ativa na mesa selecionada");
                     }
                     else
                     {
@@ -786,6 +786,155 @@ fnFirebase['rolar'] = (msg, parametros, idDiscord) =>{
             }
         })
     }
+}
+
+fnFirebase['item'] = (msg, idDiscord, nomeItem, modQtd, descricao) =>{
+    fbDb.ref("usuarios").once('value', snapshot =>{
+        const listaUsuarios = Object.values(snapshot.val());
+
+        const dadosUsuario = listaUsuarios.filter(u => (u.idDiscord == idDiscord));
+
+        if(descricao === undefined)
+        {
+            descricao = null;
+        }
+
+        if(dadosUsuario.length === 0)
+        {
+            msg.channel.createMessage("Usuário não vinculado à plataforma Draenak");
+            return;
+        }
+
+        const idUsuario = dadosUsuario[0].id;
+        const {fichaDiscord} = dadosUsuario[0];
+        let {mesaDiscord} = dadosUsuario[0];
+
+        if(mesaDiscord === undefined || mesaDiscord === null || mesaDiscord === "")
+        {
+            mesaDiscord = "SM";
+        }
+
+        fbDb.ref('fichas/'+idUsuario+'/'+mesaDiscord+'/'+fichaDiscord).once('value',snapshot => {
+            const fichaSelecionada = snapshot.val();
+            let itemAlterado;
+
+            if(fichaSelecionada === null || fichaSelecionada === undefined)
+            {
+                msg.channel.createMessage("Ficha não encontrada\nCertifique-se de que existe uma ficha ativa na mesa selecionada");
+                return;
+            }
+
+            let {itens} = fichaSelecionada;
+            let listaNomeItens = [];
+
+            if(itens === null || itens === undefined)
+            {
+                itens = [];
+            }
+
+            itens.forEach(item => {
+                listaNomeItens.push(item.nome);
+            })
+
+            //Após puxar lista de informações e colocar uma lista com os nomes dos itens que o personagem possui, procura se o item passado pelo usuário está nessa lista
+            //Nessa pesquisa, procura-se saber o índice do item e, se ele não estiver na lista, retorna -1
+
+            // console.log(nomeItem + " | " + modQtd + " | " + descricao);
+
+            const indiceItem = listaNomeItens.findIndex(item => (item === nomeItem));
+
+            if((descricao === null || descricao === undefined || descricao === "") && (modQtd === null || modQtd === undefined))
+            {
+                //Significa que é uma consulta para leitura
+                if(indiceItem === -1)
+                {
+                    msg.channel.createMessage("Não achei " + nomeItem + " na ficha");
+                }
+                else
+                {
+                    itemAlterado = {...itens[indiceItem]};
+
+                    if(itemAlterado.descricao === null || itemAlterado.descricao === undefined || itemAlterado.descricao === "")
+                    {
+                        msg.channel.createMessage("Sem descrição disponível");
+                    }
+                    else
+                    {
+                        msg.channel.createMessage(itemAlterado.descricao);
+                    }
+                }
+            }
+            else
+            {
+                if(isNaN(parseInt(modQtd)))
+                {
+                    modQtd = 0;
+                }
+
+                if(indiceItem === -1) //Ou seja, não encontrou nada
+                {
+
+                    if(modQtd < 0)
+                    {
+                        msg.channel.createMessage("Você já não possui " + nomeItem);
+                        return;
+                    }
+                    
+                    if(modQtd === 0)
+                    {
+                        modQtd = 1;
+                    }
+
+                    itemAlterado = {
+                        nome:nomeItem,
+                        quantidade:modQtd,
+                        descricao:descricao
+                    };
+
+                    itens.push(itemAlterado);
+                }
+                else
+                {
+                    itemAlterado = {...itens[indiceItem]};
+                    itemAlterado.quantidade += modQtd;
+                    itemAlterado.descricao = descricao;
+
+                    if(itemAlterado.quantidade <= 0)
+                    {
+                        itens[indiceItem] = null
+                    }
+                    else
+                    {
+                        itens[indiceItem] = {...itemAlterado};
+                    }
+                }
+
+                fbDb.ref('fichas/'+idUsuario+'/'+mesaDiscord+'/'+fichaDiscord).update({
+                    itens:itens
+                }).then(() => {
+                    if(modQtd < 0)
+                    {
+                        msg.channel.createMessage(nomeItem + " removido em " + modQtd);
+                    }
+                    else if(modQtd > 0)
+                    {
+                        msg.channel.createMessage(nomeItem + " adicionado em " + modQtd);
+                    }
+
+                    if(descricao !== null && descricao !== undefined && descricao !== "")
+                    {
+                        msg.channel.createMessage("Descrição de " + nomeItem + " atualizada");
+                    }
+                }).catch(err => {
+                    msg.channel.createMessage("Deu alguma coisa errada. Contate o criador");
+                    console.warn(err);
+                })
+            }
+
+            // console.log(nomeItem + " | " + modQtd + " | " + descricao);
+            // console.log(listaNomeItens);
+        })
+    })
 }
 
 function Rolagem(msg, rolagem, dificuldade, nomeParametro, natural)

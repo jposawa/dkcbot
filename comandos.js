@@ -27,7 +27,7 @@ comandoPorNome['comandos'] = {
 comandoPorNome['ajuda'] = {
     executar: (msg, args) => {
         let comandos;
-        console.log(args.length);
+        // console.log(args.length);
         if(args.length === 0)
         {
             comandoPorNome.comandos.executar(msg);
@@ -261,6 +261,96 @@ comandoPorNome['rolar'] ={
     }
 }
 
+comandoPorNome['item'] = {
+    executar: (msg, args) =>{
+        //PRIMEIRO VER SE EXISTEM MENÇÕES
+        let parametros, nomeItem, modQtd, descricao;
+        let idDiscord = [];
+        if(msg.mentions.length > 0)
+        {
+            parametros = args.filter(arg => {
+                let inicioArg = args[0]+args[1];
+
+                return (inicioArg !== "<@") //Retorna apenas o que NÃO for menção a usuário
+            })
+
+            msg.mentions.forEach(mencao => {
+                idDiscord.push(mencao.id);
+            })
+        }
+        else
+        {
+            parametros = [...args];
+            idDiscord.push(msg.author.id);
+        }
+
+        //VERIFICAR SE EXISTEM PARÂMETROS
+        if(parametros.length === 0)
+        {
+            msg.channel.createMessage("É necessário informar, pelo menos, o nome do item");
+            return;
+        }
+
+        let txtParametros = parametros.join(" ");
+
+        parametros = txtParametros.split("\"");
+        parametros = parametros.filter(parametro => (parametro !== ""));
+
+        for(let i = 1; i<parametros.length; i++)
+        {
+            parametros[i] = parametros[i].trim();
+        }
+
+        // console.log(parametros.length);
+        // console.log(parametros);
+        
+        switch(parametros.length)
+        {
+            case 1:
+                nomeItem = parametros[0];
+            break;
+            
+            case 2:
+                nomeItem = parametros[0];
+                // console.log("ploft");
+
+                if(!isNaN(parseInt(parametros[1])))
+                {
+                    // console.log(parseInt(parametros[1]));
+                    modQtd = parseInt(parametros[1]);
+                    parametros = parametros[1].split(" ");
+                    if(parametros.length > 1) //Significa que tem descrição após o número
+                    {
+                        parametros.splice(0,1);
+                        // console.log(parametros);
+                        descricao = parametros.join(" ");
+                        descricao = descricao.trim();
+                    }
+                    
+                }
+                else
+                {
+                    descricao = parametros[1];
+                    // console.log(parametros);
+                    // parametros = parametros[1].split(" ");
+                    // console.log(parametros);
+                    // modQtd = parseInt(parametros[1]);
+                }
+            break;
+
+            case 3:
+                nomeItem = parametros[0];
+                modQtd = parseInt(parametros[1]);
+                descricao = parametros[2];
+            break;
+        }
+
+        idDiscord.forEach(id => {
+            fnFirebase['item'](msg, id, nomeItem, modQtd, descricao);
+        })
+    }
+}
+
 function InfoComando(msg, nomeComando)
 {
     // console.log("Oi" + nomeComando);
@@ -328,6 +418,17 @@ function InfoComando(msg, nomeComando)
             mensagem += "\n(Observe que para Competências você não precisa colocar o caractere **°**)";
             mensagem += "\nÉ importante lembrar que competências que tenham rolagem natural (Sem considerar modificadores) acima de 85 evoluem 1 ponto, ou são aprendidas caso a ficha não possua a Competência";
             mensagem += "\n\nVocê também pode colocar modificadores no atributo ou alterar a dificuldade, por exemplo:\n*" + prefixo + "rolar Artes Marciais+2>45* para adicionar 2 ao resultado e alterar a dificuldade para 45";
+        break;
+
+        case "item":
+            mensagem += "\nÉ utilizado para ler alguma descrição de algum item na ficha do personagem ativo ou, alternativamente, para modificar a quantidade desse item ou a descrição dele.";
+            mensagem += "\nEu sei se você quer apenas ler a informação ou alterar caso você passe algum parâmetro. O comando completo é **dkc!item \"Nome do item\" *[quantidade a modificar] [descrição]*";
+            mensagem += "\nO **Nome do item** é necessário que seja colocado entre aspas (\"). Os outros parâmetros não são obrigatórios e, como eu já falei, se eles forem omitidos eu vou considerar que você quer apenas a descrição do item. Claro que se você não possuir o item no seu inventário eu não terei como te dar essa descrição";
+            mensagem += "\nCaso você coloque apenas um dos parâmetros (Quantidade ou Descrição), apenas esse parâmetro será alterado. Porém é importante ressaltar que se o primeiro caractere após o nome for um número eu também vou considerar que ele é a quantidade a ser alterada\n";
+            mensagem += "\nExemplos:\n";
+            mensagem += "*dkc!item \"Blaster\" 1 Arma de disparos energéticos* me informa que você quer adicionar 1 Blaster na sua ficha e ele terá a descrição *Arma de disparos energéticos*";
+            mensagem += "\n*dkc!item \"Blaster\" -1* me instrui a remover 1 Blaster da sua ficha. Caso a quantidade final seja 0 ou menos, o item será removido do seu inventário na ficha";
+            mensagem += "\n*dkc!item \"Blaster\" \"1 Arma de disparos energéticos\"* me informa que você quer alterar a descrição do item Blaster para *\"1 Arma de disparos energéticos\"* na sua ficha (E adiciona o item caso você não o tenha)";
         break;
 
         case "xablau":
