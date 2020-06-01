@@ -371,6 +371,7 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                     {
                         filtro.forEach(filtro => {
                             filtro = filtro.toLowerCase();
+                            console.log(filtro);
                             switch(filtro)
                             {
                                 case "atributos" || "Atributos":
@@ -383,7 +384,7 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                                     mensagem += "**P**resença = " + atributos.presenca[0] + "\n";
                                 break;
 
-                                case "tracos" || "Tracos" || "Traços" || "traços":
+                                case "tracos" || "traços":
                                     mensagem += "\n**#TRAÇOS**\n";
                                     if(tracos !== null && tracos !== undefined)
                                     {
@@ -393,7 +394,7 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                                     }
                                 break;
 
-                                case "competencias" || "Competencias" || "Competências" || "competências":
+                                case "competencias" || "competências":
                                     mensagem += "\n**#COMPETÊNCIAS**\n";
                                     Object.entries(atributos).forEach((nome) => {
                                         const listaCompetencias = nome[1][1];
@@ -423,7 +424,7 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                                         }) 
                                     }
 
-                                    msg.channel.createMessage(mensagem);
+                                    // msg.channel.createMessage(mensagem);
                                 break;
 
                                 default:
@@ -879,7 +880,7 @@ fnFirebase['item'] = (msg, idDiscord, nomeItem, modQtd, descricao) =>{
                         msg.channel.createMessage("Você já não possui " + nomeItem);
                         return;
                     }
-                    
+
                     if(modQtd === 0)
                     {
                         modQtd = 1;
