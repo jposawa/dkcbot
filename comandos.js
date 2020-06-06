@@ -1,4 +1,5 @@
 const comandoPorNome = {};
+require('eris-embed-builder');
 const fnFirebase = require('./fnFirebase.js');
 const {BOT_OWNER_ID} = require('./config.json');
 
@@ -182,32 +183,12 @@ comandoPorNome['ativarFicha'] = {
 
 comandoPorNome['dadosFicha'] = {
     executar: (msg, args) => {
-        let filtro;
-        if(args.length > 0)
-        {
-            filtro = args.join("|");
-            filtro = filtro.split("<");
-            if(filtro[0] === "")
-            {
-                filtro = filtro[1];
-                filtro = filtro.split("|");
-                // console.log("caplow");
-                if(filtro[0][0] === "@")
-                {
-                    filtro = filtro.slice(1);
-                }
-            }
-            else
-            {
-                filtro = filtro[0];
-                filtro = filtro.split("|");
-                // console.log("xablau");
-                if(filtro[filtro.length-1][0] === "@")
-                {
-                    filtro.pop();
-                }
-            }
-        }
+        let filtro = args.filter(arg => {
+            const inicioArg = arg[0]+arg[1];
+
+            return (inicioArg !== "<@");
+        });
+
         if(msg.mentions.length === 0)
         {
             fnFirebase.dadosFicha(msg, msg.author.id, filtro);

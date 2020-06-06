@@ -362,12 +362,18 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                 }
                 else
                 {
-                    const {atributos,itens,tracos} = fichaSelecionada;
-                    let mensagem = "**" + fichaSelecionada.nome + "**\n";
+                    const {imagem,atributos,itens,tracos} = fichaSelecionada;
+                    let mensagem = "";
+                    /* if(imagem !== null && imagem !== undefined && imagem !== "")
+                    {
+                        mensagem += imagem
+                    } */
+                    mensagem += "\n**" + fichaSelecionada.nome + "**\n";
                     mensagem += "Pontos: " + fichaSelecionada.pontosGastos + "/" + fichaSelecionada.pontosTotais + "\n";
                     // console.log(fichaSelecionada);
+                    // console.log("Meu filtro:");
                     // console.log(filtro);
-                    if(filtro !== undefined && filtro !== null)
+                    if(filtro !== undefined && filtro !== null && filtro.length > 0)
                     {
                         filtro.forEach(filtro => {
                             filtro = filtro.toLowerCase();
@@ -428,6 +434,7 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                                 break;
 
                                 default:
+                                    // console.log("puffut");
                                     mensagem += "\n**#ATRIBUTOS**\n";
                                     mensagem += "**F**ísico = " + atributos.fisico[0] + " | ";
                                     mensagem += "**C**oordenação = " + atributos.coordenacao[0] + "\n";
@@ -473,6 +480,7 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                     }
                     else
                     {
+                        // console.log("caplow");
                         mensagem += "\n**#ATRIBUTOS**\n";
                         mensagem += "**F**ísico = " + atributos.fisico[0] + " | ";
                         mensagem += "**C**oordenação = " + atributos.coordenacao[0] + "\n";
@@ -516,8 +524,14 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                             })
                         }
                     }
-                    
-                    msg.channel.createMessage(mensagem);
+
+                    const embed = msg.channel.createEmbed(msg.channel.id);
+                    embed.thumbnail(imagem);
+                    embed.description(mensagem);
+                    // const enviaEmbed = erisEmbedBuider
+                    // console.log(embed);
+                    embed.send(msg.channel);
+                    // msg.channel.createMessage(embed);
                 }
             })
         }
