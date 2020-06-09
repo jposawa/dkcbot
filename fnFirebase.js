@@ -363,171 +363,251 @@ fnFirebase['dadosFicha'] = (msg, idDiscord, filtro) =>{
                 else
                 {
                     const {imagem,atributos,itens,tracos} = fichaSelecionada;
+                    let {ferimentos} = fichaSelecionada;
                     let mensagem = "";
+                    const embed = msg.channel.createEmbed(msg.channel.id);
+                    embed.title(fichaSelecionada.nome);
+                    // console.log(msg.author);
+                    embed.footer(msg.author.username);
+                    // embed.author("Draenak Companion",'', 'https://dkc.netlify.com');
+                    embed.thumbnail(imagem);
+                    const campos = [];
+                    let campo = {
+                        name:undefined,
+                        value:undefined,
+                        inline:false
+                    }
+
+                    if(ferimentos === null || ferimentos === undefined || ferimentos.length === 0)
+                    {
+                        ferimentos = [0,0,0,0,0];
+                    }
                     /* if(imagem !== null && imagem !== undefined && imagem !== "")
                     {
                         mensagem += imagem
                     } */
-                    mensagem += "\n**" + fichaSelecionada.nome + "**\n";
-                    mensagem += "Pontos: " + fichaSelecionada.pontosGastos + "/" + fichaSelecionada.pontosTotais + "\n";
+                    mensagem += "*" + fichaSelecionada.raca + "*\n";
+                    mensagem += fichaSelecionada.pontosGastos + " pontos" + "\n";
+                    embed.description(mensagem);
                     // console.log(fichaSelecionada);
                     // console.log("Meu filtro:");
-                    // console.log(filtro);
-                    if(filtro !== undefined && filtro !== null && filtro.length > 0)
+                    if(filtro === undefined || filtro === null || filtro.length === 0)
                     {
-                        filtro.forEach(filtro => {
-                            filtro = filtro.toLowerCase();
-                            console.log(filtro);
-                            switch(filtro)
-                            {
-                                case "atributos" || "Atributos":
-                                    mensagem += "\n**#ATRIBUTOS**\n";
-                                    mensagem += "**F**ísico = " + atributos.fisico[0] + " | ";
-                                    mensagem += "**C**oordenação = " + atributos.coordenacao[0] + "\n";
-                                    mensagem += "**I**nteligência = " + atributos.inteligencia[0] + " | ";
-                                    mensagem += "**A**stúcia = " + atributos.astucia[0] + "\n";
-                                    mensagem += "**V**ontade = " + atributos.vontade[0] + " | ";
-                                    mensagem += "**P**resença = " + atributos.presenca[0] + "\n";
-                                break;
-
-                                case "tracos" || "traços":
-                                    mensagem += "\n**#TRAÇOS**\n";
-                                    if(tracos !== null && tracos !== undefined)
-                                    {
-                                        tracos.forEach(traco => {
-                                            mensagem += traco.nome + "\n";
-                                        })
-                                    }
-                                break;
-
-                                case "competencias" || "competências":
-                                    mensagem += "\n**#COMPETÊNCIAS**\n";
-                                    Object.entries(atributos).forEach((nome) => {
-                                        const listaCompetencias = nome[1][1];
-                                        const atribCompetencia = nome[0];
-                                        // console.log(atribCompetencia);
-
-                                        // console.log(atributo);
-                                        // console.log(listaCompetencias);
-                                        if(listaCompetencias !== undefined && listaCompetencias !== null)
-                                        {
-                                            Object.entries(listaCompetencias).forEach((entrada) => {
-                                                const nome = entrada[0];
-                                                const valor = entrada[1];
-                                                mensagem += "**[" + atribCompetencia[0].toUpperCase() + "]** ";
-                                                mensagem += "*" + nome + "* (" + valor + ")\n";
-                                            })
-                                        }
-                                    })
-                                break;
-
-                                case "itens":
-                                    mensagem += "\n**#ITENS**\n";
-                                    if(itens !== undefined && itens !== null)
-                                    {
-                                        itens.forEach(item => {
-                                            mensagem += "\n" + item.quantidade + "x " + item.nome;
-                                        }) 
-                                    }
-
-                                    // msg.channel.createMessage(mensagem);
-                                break;
-
-                                default:
-                                    // console.log("puffut");
-                                    mensagem += "\n**#ATRIBUTOS**\n";
-                                    mensagem += "**F**ísico = " + atributos.fisico[0] + " | ";
-                                    mensagem += "**C**oordenação = " + atributos.coordenacao[0] + "\n";
-                                    mensagem += "**I**nteligência = " + atributos.inteligencia[0] + " | ";
-                                    mensagem += "**A**stúcia = " + atributos.astucia[0] + "\n";
-                                    mensagem += "**V**ontade = " + atributos.vontade[0] + " | ";
-                                    mensagem += "**P**resença = " + atributos.presenca[0] + "\n";
-
-                                    mensagem += "\n**#TRAÇOS**\n";
-                                    tracos.forEach(traco => {
-                                        mensagem += traco.nome + "\n";
-                                    })
-                                    
-                                    mensagem += "\n**#COMPETÊNCIAS**\n";
-                                    Object.entries(atributos).forEach((nome) => {
-                                        const listaCompetencias = nome[1][1];
-                                        const atribCompetencia = nome[0];
-                                        // console.log(atribCompetencia);
-
-                                        // console.log(atributo);
-                                        // console.log(listaCompetencias);
-                                        if(listaCompetencias !== undefined && listaCompetencias !== null)
-                                        {
-                                            Object.entries(listaCompetencias).forEach((entrada) => {
-                                                const nome = entrada[0];
-                                                const valor = entrada[1];
-                                                mensagem += "**[" + atribCompetencia[0].toUpperCase() + "]** ";
-                                                mensagem += "*" + nome + "* (" + valor + ")\n";
-                                            })
-                                        }
-                                    })
-                                    
-                                    mensagem += "\n**#ITENS**\n";
-                                    if(itens !== null && itens !== undefined)
-                                    {
-                                        itens.forEach(item => {
-                                            mensagem += "\n" + item.quantidade + "x " + item.nome;
-                                        }) 
-                                    }
-                                break;
-                            }
-                        })
+                        filtro = ["td"];
                     }
-                    else
-                    {
-                        // console.log("caplow");
-                        mensagem += "\n**#ATRIBUTOS**\n";
-                        mensagem += "**F**ísico = " + atributos.fisico[0] + " | ";
-                        mensagem += "**C**oordenação = " + atributos.coordenacao[0] + "\n";
-                        mensagem += "**I**nteligência = " + atributos.inteligencia[0] + " | ";
-                        mensagem += "**A**stúcia = " + atributos.astucia[0] + "\n";
-                        mensagem += "**V**ontade = " + atributos.vontade[0] + " | ";
-                        mensagem += "**P**resença = " + atributos.presenca[0] + "\n";
-
-                        mensagem += "\n**#TRAÇOS**\n";
-                        if(tracos !== undefined)
+                    // console.log(filtro);
+                    filtro.forEach(filtro => {
+                        filtro = filtro.toLowerCase();
+                        // console.log(filtro);
+                        campo.value = "";
+                        if(filtro === "atributos")
                         {
-                            tracos.forEach(traco => {
-                                mensagem += traco.nome + "\n";
-                            })
-                        }
-                        
-                        mensagem += "\n**#COMPETÊNCIAS**\n";
-                        Object.entries(atributos).forEach((nome) => {
-                            const listaCompetencias = nome[1][1];
-                            const atribCompetencia = nome[0];
-                            // console.log(atribCompetencia);
+                            campo.name = "**ATRIBUTOS**";
+                            campo.value += "**F**ísico = " + atributos.fisico[0] + " | ";
+                            campo.value += "**C**oordenação = " + atributos.coordenacao[0] + "\n";
+                            campo.value += "**I**nteligência = " + atributos.inteligencia[0] + " | ";
+                            campo.value += "**A**stúcia = " + atributos.astucia[0] + "\n";
+                            campo.value += "**V**ontade = " + atributos.vontade[0] + " | ";
+                            campo.value += "**P**resença = " + atributos.presenca[0] + "\n";
 
-                            // console.log(atributo);
-                            // console.log(listaCompetencias);
-                            if(listaCompetencias !== undefined && listaCompetencias !== null)
+                            embed.field(campo.name, campo.value, campo.inline);
+                        }
+                        else if(filtro === "tracos" || filtro === "traços")
+                        {
+                            campo.name = "**TRAÇOS**";
+                            campo.value = "";
+                            if(tracos !== null && tracos !== undefined)
                             {
-                                Object.entries(listaCompetencias).forEach((entrada) => {
-                                    const nome = entrada[0];
-                                    const valor = entrada[1];
-                                    mensagem += "**[" + atribCompetencia[0].toUpperCase() + "]** ";
-                                    mensagem += "*" + nome + "* (" + valor + ")\n";
+                                tracos.forEach(traco => {
+                                    campo.value += traco.nome + "\n";
                                 })
                             }
-                        })
-                        
-                        mensagem += "\n**#ITENS**\n";
-                        if(itens !== undefined)
-                        {
-                            itens.forEach(item => {
-                                mensagem += "\n" + item.quantidade + "x " + item.nome;
-                            })
+                            if(campo.value === "")
+                            {
+                                campo.value = ".";
+                            }
+                            embed.field(campo.name, campo.value, campo.inline);
                         }
-                    }
+                        else if(filtro === "competencias" || filtro === "competências")
+                        {
+                            campo.name = "**COMPETÊNCIAS**";
+                            campo.value = "";
+                            Object.entries(atributos).forEach((nome) => {
+                                const listaCompetencias = nome[1][1];
+                                const atribCompetencia = nome[0];
+                                // console.log(atribCompetencia);
 
-                    const embed = msg.channel.createEmbed(msg.channel.id);
-                    embed.thumbnail(imagem);
-                    embed.description(mensagem);
+                                // console.log(atributo);
+                                // console.log(listaCompetencias);
+                                if(listaCompetencias !== undefined && listaCompetencias !== null)
+                                {
+                                    Object.entries(listaCompetencias).forEach((entrada) => {
+                                        const nome = entrada[0];
+                                        const valor = entrada[1];
+                                        campo.value += "**[" + atribCompetencia[0].toUpperCase() + "]** ";
+                                        campo.value += "*" + nome + "* (" + valor + ")\n";
+                                    })
+                                }
+                            })
+
+                            if(campo.value === "")
+                            {
+                                campo.value = ".";
+                            }
+
+                            embed.field(campo.name, campo.value, campo.inline);
+                        }
+                        else if(filtro === "itens")
+                        {
+                            campo.name = "**ITENS**";
+                            campo.value = "";
+                            if(itens !== undefined && itens !== null)
+                            {
+                                itens.forEach(item => {
+                                    campo.value += item.quantidade + "x " + item.nome + "\n";
+                                }) 
+                            }
+
+                            if(campo.value === "")
+                            {
+                                campo.value = ".";
+                            }
+
+                            embed.field(campo.name, campo.value, campo.inline);
+                            // msg.channel.createMessage(mensagem);
+                        }
+                        else if(filtro === "ferimentos")
+                        {
+                            campo.name = "**FERIMENTOS**";
+                            let linha = "";
+
+                            for(let i = 0; i < ferimentos.length; i++)
+                            {
+                                let nvFerimento = (i+1);
+
+                                linha += "Nv. " + nvFerimento + ": " + ferimentos[i];
+                                
+                                if((i%2) === 0 && i < ferimentos.length - 1)
+                                {
+                                    linha += "  |  ";
+                                }
+                                else
+                                {
+                                    linha += "\n";
+                                }
+                            }
+                            campo.value = linha.trim();
+
+                            embed.field(campo.name, campo.value, campo.inline);
+                        }
+                        else
+                        {
+                            campo.value = "";
+                            // console.log("puffut");
+                            campo.name = "**ATRIBUTOS**";
+                            campo.value += "**F**ísico = " + atributos.fisico[0] + " | ";
+                            campo.value += "**C**oordenação = " + atributos.coordenacao[0] + "\n";
+                            campo.value += "**I**nteligência = " + atributos.inteligencia[0] + " | ";
+                            campo.value += "**A**stúcia = " + atributos.astucia[0] + "\n";
+                            campo.value += "**V**ontade = " + atributos.vontade[0] + " | ";
+                            campo.value += "**P**resença = " + atributos.presenca[0] + "\n";
+                            
+                            embed.field(campo.name, campo.value, campo.inline);
+
+                            campo.value = "";
+                            
+                            campo.name = "**COMPETÊNCIAS**";
+
+                            Object.entries(atributos).forEach((nome) => {
+                                const listaCompetencias = nome[1][1];
+                                const atribCompetencia = nome[0];
+                                // console.log(atribCompetencia);
+
+                                // console.log(atributo);
+                                // console.log(listaCompetencias);
+                                if(listaCompetencias !== undefined && listaCompetencias !== null)
+                                {
+                                    Object.entries(listaCompetencias).forEach((entrada) => {
+                                        const nome = entrada[0];
+                                        const valor = entrada[1];
+                                        campo.value += "**[" + atribCompetencia[0].toUpperCase() + "]** ";
+                                        campo.value += "*" + nome + "* (" + valor + ")\n";
+                                    })
+                                }
+                            })
+
+                            if(campo.value === "")
+                            {
+                                campo.value = ".";
+                            }
+
+                            embed.field(campo.name, campo.value, campo.inline);
+
+                            campo.value = "";
+
+                            campo.name = "**TRAÇOS**";
+                            campo.inline = true;
+                            if(tracos !== null && tracos !== undefined)
+                            {
+                                tracos.forEach(traco => {
+                                    campo.value += traco.nome + "\n";
+                                })
+                            }
+
+                            if(campo.value === "")
+                            {
+                                campo.value = ".";
+                            }
+
+                            embed.field(campo.name, campo.value, campo.inline);
+                            
+                            campo.value = "";
+                            campo.name = "**ITENS**";
+
+                            if(itens !== null && itens !== undefined)
+                            {
+                                itens.forEach(item => {
+                                    campo.value += "\n" + item.quantidade + "x " + item.nome;
+                                }) 
+                            }
+
+                            if(campo.value === "")
+                            {
+                                campo.value = ".";
+                            }
+
+                            embed.field(campo.name, campo.value, campo.inline);
+
+                            campo.value = "";
+                            campo.inline = false;
+
+                            campo.name = "**FERIMENTOS**";
+                            let linha = "";
+
+                            for(let i = 0; i < ferimentos.length; i++)
+                            {
+                                let nvFerimento = (i+1);
+
+                                linha += "Nv. " + nvFerimento + ": " + ferimentos[i];
+                                
+                                if((i%2) === 0 && i < ferimentos.length - 1)
+                                {
+                                    linha += "  |  ";
+                                }
+                                else
+                                {
+                                    linha += "\n";
+                                }
+                            }
+                            campo.value = linha.trim();
+
+                            embed.field(campo.name, campo.value, campo.inline);
+                        }
+                    });
+
+                    // console.log(campos);
+                    // embed.field(campos);
+                    embed.timestamp();
                     // const enviaEmbed = erisEmbedBuider
                     // console.log(embed);
                     embed.send(msg.channel);
