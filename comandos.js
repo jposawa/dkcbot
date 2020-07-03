@@ -250,7 +250,7 @@ comandoPorNome['item'] = {
         if(msg.mentions.length > 0)
         {
             parametros = args.filter(arg => {
-                let inicioArg = args[0]+args[1];
+                let inicioArg = arg[0]+arg[1];
 
                 return (inicioArg !== "<@") //Retorna apenas o que NÃO for menção a usuário
             })
