@@ -823,7 +823,7 @@ fnFirebase['rolar'] = (msg, parametros, idDiscord) =>{
 
                                 if(rolagem > minimoUp)
                                 {
-                                    valorParametro += 1;
+                                    valorParametro = parseInt(valorParametro) + 1;
                                     if(atributoEscolhido.length > 0)
                                     {
                                         atributos[atributoEscolhido][1][parametro] = valorParametro;
