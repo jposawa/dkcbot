@@ -728,6 +728,8 @@ fnFirebase['rolar'] = (msg, parametros, idDiscord) =>{
 
                             // console.log(parametro);
 
+                            parametro = ValidaAtributo(parametro, [..._atributos]);
+
                             if(_atributos.includes(parametro))
                             {
                                 //Significa que é uma rolagem de atributo
@@ -823,10 +825,9 @@ fnFirebase['rolar'] = (msg, parametros, idDiscord) =>{
 
                                 if(rolagem > minimoUp)
                                 {
-                                    valorParametro = parseInt(valorParametro) + 1;
                                     if(atributoEscolhido.length > 0)
                                     {
-                                        atributos[atributoEscolhido][1][parametro] = valorParametro;
+                                        atributos[atributoEscolhido][1][parametro] = parseInt(atributos[atributoEscolhido][1][parametro]) + 1;
                                         // console.log("puff");
                                         UpaCompetencia(msg, idUsuario,mesaDiscord,fichaDiscord,atributos, {nome:parametro,valor:valorParametro});
                                     }
@@ -1084,6 +1085,44 @@ function Rolagem(msg, rolagem, dificuldade, nomeParametro, natural)
         resposta += rolagem;
     }
     msg.channel.createMessage(resposta);
+}
+
+function ValidaAtributo(valorInicial, listaAtributos)
+{
+  let valorMinusculo = valorInicial.toLowerCase();
+  const _variacoesAtributos = ["físico", "coordenação","coordenaçao","coordenacão", "inteligência", "presença"];
+
+  if(listaAtributos.includes(valorMinusculo))
+  {
+    return valorMinusculo;
+  }
+
+  let resultado;
+  let indiceVariacao = _variacoesAtributos.findIndex(variacao => (variacao === valorMinusculo));
+
+  if(indiceVariacao === 0)
+  {
+    resultado = "fisico";
+  }
+  else if(indiceVariacao <= 3)
+  {
+    resultado = "coordenacao";
+  }
+  else if(indiceVariacao === 4)
+  {
+    resultado = "inteligencia";
+  }
+  else if(indiceVariacao === 5)
+  {
+    resultado = "presenca";
+  }
+  else
+  {
+    resultado = valorMinusculo;
+    resultado[0] = resultado[0].toUpperCase();
+  }
+
+  return resultado;
 }
 
 function UpaCompetencia(msg, idUsuario, idMesa, idFicha, atributos, parametro)
